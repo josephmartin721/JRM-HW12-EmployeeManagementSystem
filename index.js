@@ -10,14 +10,12 @@ var connection = mysql.createConnection({
   database: "employee_db"
 });
 
-// connect to the mysql server and sql database
+// Connect to the server and the db
 connection.connect(function (err) {
   if (err) throw err;
-  // run the start function after the connection is made to prompt the user
   firstPrompt();
 });
 
-// function which prompts the user for what action they should take
 function firstPrompt() {
 
   inquirer
@@ -28,14 +26,11 @@ function firstPrompt() {
       choices: [
         "View Employees",
         "View Employees by Department",
-        // "View Employees by Manager",
         "Add Employee",
         "Remove Employees",
         "Update Employee Role",
         "Add Role",
-        // "Remove Role",
-        // "Update Employee Manager",
-        "End"]
+        "EXIT"]
     })
     .then(function ({ task }) {
       switch (task) {
@@ -45,13 +40,10 @@ function firstPrompt() {
         case "View Employees by Department":
           viewEmployeeByDepartment();
           break;
-        // case "View Employees by Manager":
-        //   viewEmployeeByManager();
-        //   break;
         case "Add Employee":
           addEmployee();
           break;
-        case "Remove Employees":
+        case "Remove Employee(s)":
           removeEmployees();
           break;
         case "Update Employee Role":
@@ -60,22 +52,13 @@ function firstPrompt() {
         case "Add Role":
           addRole();
           break;
-        // case "Remove Role":
-        //   removeRole();
-        //   break;
-
-        // case "Update Employee MAnager":
-        //   updateEmployeeManager();
-        //   break;
-
-        case "End":
+        case "EXIT":
           connection.end();
           break;
       }
     });
 }
 
-//////////////////========================= 1."View Employees"/ READ all, SELECT * FROM
 
 function viewEmployee() {
   console.log("Viewing employees\n");
@@ -98,12 +81,7 @@ function viewEmployee() {
 
     firstPrompt();
   });
-  // console.log(query.sql);
 }
-
-//========================================= 2."View Employees by Department" / READ by, SELECT * FROM
-
-// Make a department array
 
 function viewEmployeeByDepartment() {
   console.log("Viewing employees by department\n");
@@ -120,10 +98,6 @@ function viewEmployeeByDepartment() {
   connection.query(query, function (err, res) {
     if (err) throw err;
 
-    // const departmentChoices = res.map(({ id, name }) => ({
-    //   name: `${id} ${name}`,
-    //   value: id
-    // }));
 
     const departmentChoices = res.map(data => ({
       value: data.id, name: data.name
@@ -134,10 +108,8 @@ function viewEmployeeByDepartment() {
 
     promptDepartment(departmentChoices);
   });
-  // console.log(query.sql);
 }
 
-// User choose the department list, then employees pop up
 
 function promptDepartment(departmentChoices) {
 
@@ -172,14 +144,6 @@ function promptDepartment(departmentChoices) {
       });
     });
 }
-
-//========================================= 3."View Employees by Manager"
-
-
-
-//========================================= 4."Add Employee" / CREATE: INSERT INTO
-
-// Make a employee array
 
 function addEmployee() {
   console.log("Inserting an employee!")
@@ -222,18 +186,12 @@ function promptInsert(roleChoices) {
         message: "What is the employee's role?",
         choices: roleChoices
       },
-      // {
-      //   name: "manager_id",
-      //   type: "list",
-      //   message: "What is the employee's manager_id?",
-      //   choices: manager
-      // }
+
     ])
     .then(function (answer) {
       console.log(answer);
 
       var query = `INSERT INTO employee SET ?`
-      // when finished prompting, insert a new item into the db with that info
       connection.query(query,
         {
           first_name: answer.first_name,
@@ -249,13 +207,8 @@ function promptInsert(roleChoices) {
 
           firstPrompt();
         });
-      // console.log(query.sql);
     });
 }
-
-//========================================= 5."Remove Employees" / DELETE, DELETE FROM
-
-// Make a employee array to delete
 
 function removeEmployees() {
   console.log("Deleting an employee");
@@ -278,7 +231,6 @@ function removeEmployees() {
   });
 }
 
-// User choose the employee list, then employee is deleted
 
 function promptDelete(deleteEmployeeChoices) {
 
@@ -294,7 +246,6 @@ function promptDelete(deleteEmployeeChoices) {
     .then(function (answer) {
 
       var query = `DELETE FROM employee WHERE ?`;
-      // when finished prompting, insert a new item into the db with that info
       connection.query(query, { id: answer.employeeId }, function (err, res) {
         if (err) throw err;
 
@@ -303,11 +254,9 @@ function promptDelete(deleteEmployeeChoices) {
 
         firstPrompt();
       });
-      // console.log(query.sql);
     });
 }
 
-//========================================= 6."Update Employee Role" / UPDATE,
 
 function updateEmployeeRole() { 
   employeeArray();
@@ -383,7 +332,6 @@ function promptEmployeeRole(employeeChoices, roleChoices) {
     .then(function (answer) {
 
       var query = `UPDATE employee SET role_id = ? WHERE id = ?`
-      // when finished prompting, insert a new item into the db with that info
       connection.query(query,
         [ answer.roleId,  
           answer.employeeId
@@ -396,13 +344,8 @@ function promptEmployeeRole(employeeChoices, roleChoices) {
 
           firstPrompt();
         });
-      // console.log(query.sql);
     });
 }
-
-
-
-//////////////////========================= 7."Add Role" / CREATE: INSERT INTO
 
 function addRole() {
 
@@ -418,7 +361,6 @@ function addRole() {
   connection.query(query, function (err, res) {
     if (err) throw err;
 
-    // (callbackfn: (value: T, index: number, array: readonly T[]) => U, thisArg?: any)
     const departmentChoices = res.map(({ id, name }) => ({
       value: id, name: `${id} ${name}`
     }));
