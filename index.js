@@ -23,42 +23,43 @@ connection.connect(function (err) {
 
 function askQuestions() {
     inquirer.prompt({
-        message: "How would you like to proceed?",
+        message: "what would you like to do?",
         type: "list",
         choices: [
-            "View All Employees",
-            "View All Departments",
+            "View all Employees",
+            "View all Departments",
             "Add Employee",
             "Add Department",
-            "Add Position",
-            "Update Employee Position",
+            "Add Role",
+            "Update Employee Role",
             "END SESSION"
         ],
         name: "choice"
     }).then(answers => {
         console.log(answers.choice);
         switch (answers.choice) {
-            case "view all employees":
+            case "View all Employees":
                 viewEmployees()
                 break;
 
-            case "view all departments":
+            case "View all Departments":
                 viewDepartments()
                 break;
 
-            case "add employee":
+            case "Add Employee":
                 addEmployee()
                 break;
 
-            case "add department":
+            case "Add Department":
                 addDepartment()
                 break;
 
-            case "add role":
+
+            case "Add Role":
                 addRole()
                 break;
 
-            case "update employee role":
+            case "Update Employee Role":
                 updateEmployeeRole();
                 break;
 
